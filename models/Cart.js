@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const CartProduct = sequelize.define(
+    const Cart = sequelize.define(
         'Cart',
         {
             id: {
@@ -7,9 +7,9 @@ module.exports = (sequelize, DataTypes) => {
                 primaryKey: true,
                 autoIncrement: true,
             },
-            quantity: {
-                type: DataTypes.INTEGER,
-                defaultValue: 1,
+            active: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: true,
                 allowNull: false,
             },
         },
@@ -18,10 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
 
-    CartProduct.associate = (models) => {
-        CartProduct.belongsTo(models.Cart);
-        CartProduct.belongsTo(models.Product);
+    Cart.associate = (models) => {
+        Cart.belongsTo(models.User);
+        Cart.hasMany(models.CartProduct);
     };
 
-    return CartProduct;
+    return Cart;
 };
