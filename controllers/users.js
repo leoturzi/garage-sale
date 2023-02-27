@@ -1,3 +1,5 @@
+const db = require('../models');
+
 const controller = {
     getUsers: (req, res) => {
         res.status(200).json({
@@ -12,8 +14,26 @@ const controller = {
         });
     },
 
-    createUser: (req, res) => {
-        res.status(201).json({
+    createUser: async (req, res) => {
+        const { username, name, lastName, email, password } = req.body;
+
+        console.log(req.body);
+
+        try {
+            await db.User.create({
+                username,
+                name,
+                lastName,
+                email,
+                password,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                message: 'Error creating user',
+                error,
+            });
+        }
+        return res.status(201).json({
             message: 'User was created',
         });
     },
@@ -28,6 +48,34 @@ const controller = {
     deleteUser: (req, res) => {
         res.status(200).json({
             message: 'User deleted',
+            userId: req.params.id,
+        });
+    },
+
+    getCart: (req, res) => {
+        res.status(200).json({
+            message: 'User cart',
+            userId: req.params.id,
+        });
+    },
+
+    updateCart: (req, res) => {
+        res.status(200).json({
+            message: 'User cart updated',
+            userId: req.params.id,
+        });
+    },
+
+    getOrder: (req, res) => {
+        res.status(200).json({
+            message: 'User order',
+            userId: req.params.id,
+        });
+    },
+
+    getOrders: (req, res) => {
+        res.status(200).json({
+            message: 'User orders',
             userId: req.params.id,
         });
     },
