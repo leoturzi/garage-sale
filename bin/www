@@ -32,7 +32,7 @@ const server = http.createServer(app);
 async function startServer() {
     try {
         await db.sequelize
-            .sync({ force: true })
+            .sync()
             .then(() => console.log('Database & tables created!'));
 
         server.listen(port);

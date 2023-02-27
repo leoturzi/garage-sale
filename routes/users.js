@@ -12,4 +12,12 @@ router.put('/:id', controller.updateUser);
 
 router.delete('/:id', controller.deleteUser);
 
+router.get('/:id/cart', controller.getCart);
+
+router.put('/:id/cart', controller.updateCart);
+
+router.get('/:id/order/', controller.getOrder);
+
+router.get('/:id/orders', controller.getOrders);
+
 module.exports = router;

@@ -9,5 +9,15 @@ module.exports = new Sequelize(
         host: process.env.DB_HOST,
         dialect: 'mysql',
         port: process.env.DB_PORT,
+        logging: (msg) => {
+            if (
+                !msg.match(/Executing \(default\): SHOW INDEX FROM/) &&
+                !msg.match(
+                    /^(?!.*Executing \(default\): SELECT TABLE_NAME FROM INFORMATION_SCHEMA\.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME).*$/
+                )
+            ) {
+                console.log(msg);
+            }
+        },
     }
 );
