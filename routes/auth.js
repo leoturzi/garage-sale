@@ -8,6 +8,7 @@ router.post('/signin', signinValidations, controller.signin);
 
 router.post('/signup', signupValidations, controller.signup);
 
+
 router.post('/reset-password', controller.forgotPassword);
 
 module.exports = router;

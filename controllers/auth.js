@@ -110,6 +110,18 @@ const controller = {
             message: 'Forgot password',
         });
     },
+
+    signout: (req, res) => {
+        res.status(200).json({
+            message: 'Signout successful',
+        });
+    },
+
+    forgotPassword: (req, res) => {
+        res.status(200).json({
+            message: 'Forgot password',
+        });
+    },
 };
 
 module.exports = controller;

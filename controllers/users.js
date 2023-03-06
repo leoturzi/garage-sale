@@ -1,3 +1,5 @@
+const db = require('../models');
+
 const controller = {
     getUsers: (req, res) => {
         res.status(200).json({
