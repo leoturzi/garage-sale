@@ -1,4 +1,6 @@
 const db = require('../models');
+const fs = require('fs');
+const path = require('path');
 
 const controller = {
     getProducts: async (req, res) => {
@@ -11,7 +13,7 @@ const controller = {
         } catch (error) {
             console.log(error);
             res.status(500).json({
-                message: 'Something went wrong',
+                message: 'Something went wrong while fetching products',
             });
         }
     },
@@ -40,12 +42,14 @@ const controller = {
     createProduct: async (req, res) => {
         // TODO - validate req.body
 
+        const images = req.files.map((file) => file.filename);
+
         try {
             const product = await db.Product.create({
                 name: req.body.name,
                 price: req.body.price,
                 description: req.body.description,
-                image: JSON.stringify(req.files),
+                image: JSON.stringify(images),
                 discount: req.body.discount,
                 condition: req.body.condition,
                 category: req.body.category,
@@ -53,20 +57,12 @@ const controller = {
 
             return res.status(201).json({
                 message: 'Product created',
-                product: {
-                    name: req.body.name,
-                    price: req.body.price,
-                    description: req.body.description,
-                    image: req.files,
-                    discount: req.body.discount,
-                    condition: req.body.condition,
-                    category: req.body.category,
-                },
+                product,
             });
         } catch (error) {
             console.log(error);
             res.status(500).json({
-                message: 'Something went wrong',
+                message: 'Something went wrong while creating product',
             });
         }
     },
@@ -78,11 +74,43 @@ const controller = {
         });
     },
 
-    deleteProduct: (req, res) => {
-        res.status(200).json({
-            message: 'Product deleted',
-            productId: req.params.id,
-        });
+    deleteProduct: async (req, res) => {
+        try {
+            const product = await db.Product.findByPk(req.params.id);
+
+            if (!product) {
+                return res.status(404).json({
+                    message: 'Product not found',
+                });
+            }
+
+            // TODO - delete images from public/images/products
+
+            const imagesToDelete = JSON.parse(product.image);
+
+            imagesToDelete.forEach(async (image) => {
+                await fs.unlink(
+                    path.join(__dirname, `../public/images/products/${image}`),
+                    (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    }
+                );
+            });
+
+            await product.destroy();
+
+            res.status(200).json({
+                message: 'Product deleted',
+                product,
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                message: 'Something went wrong while deleting product',
+            });
+        }
     },
 };
 
